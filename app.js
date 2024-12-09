@@ -12,14 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rutas
-app.use('/api/perfumes', perfumeRoutes);
-app.use('/api/users', userRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
-//subir imagenes
-
+// Configuración de multer para subir imágenes
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/'); // Carpeta donde se guardan las imágenes
@@ -31,12 +24,16 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+app.locals.upload = upload; // Asignar multer a app.locals
 
-module.exports = upload;
+// Rutas
+app.use('/api/perfumes', perfumeRoutes);
+app.use('/api/users', userRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
-//levantar servidor
+// Levantar servidor
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+

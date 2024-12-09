@@ -22,7 +22,8 @@ router.delete('/:id', verifyToken, deletePerfume);
 
 // Subir imagen (protegido)
 router.post('/upload', verifyToken, (req, res) => {
-  req.app.locals.upload.single('imagen')(req, res, (err) => {
+  const upload = req.app.locals.upload.single('imagen');
+  upload(req, res, (err) => {
     if (err) {
       return res.status(400).json({ error: err.message });
     }
@@ -31,4 +32,3 @@ router.post('/upload', verifyToken, (req, res) => {
 });
 
 module.exports = router;
-

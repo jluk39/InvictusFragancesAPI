@@ -1,4 +1,6 @@
 const Perfume = require('../models/Perfume');
+const path = require('path');
+
 
 // Obtener todos los perfumes
 exports.getAllPerfumes = async (req, res) => {
@@ -59,9 +61,9 @@ exports.deletePerfume = async (req, res) => {
 };
 
 // Subir imagen
-exports.uploadImage = async (req, res) => {
+exports.uploadImage = (req, res) => {
   try {
-    const imagePath = `/uploads/${req.file.filename}`;
+    const imagePath = `/uploads/${req.file.filename}`; // Ruta de la imagen subida
     res.status(201).json({ message: 'Imagen subida con éxito', imagePath });
   } catch (error) {
     res.status(500).json({ error: 'Error al subir la imagen' });
