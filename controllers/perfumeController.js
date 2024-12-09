@@ -1,5 +1,6 @@
 const Perfume = require('../models/Perfume');
 
+// Obtener todos los perfumes
 exports.getAllPerfumes = async (req, res) => {
   try {
     const perfumes = await Perfume.getAll();
@@ -23,6 +24,41 @@ exports.getPerfumeById = async (req, res) => {
   }
 };
 
+// Crear un nuevo perfume
+exports.createPerfume = async (req, res) => {
+  const { nombre, precio, descripcion, imagen } = req.body;
+  try {
+    const newPerfume = await Perfume.create({ nombre, precio, descripcion, imagen });
+    res.status(201).json(newPerfume);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear el producto' });
+  }
+};
+
+// Actualizar un perfume existente
+exports.updatePerfume = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, precio, descripcion, imagen } = req.body;
+  try {
+    const updatedPerfume = await Perfume.update(id, { nombre, precio, descripcion, imagen });
+    res.json(updatedPerfume);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar el producto' });
+  }
+};
+
+// Eliminar un perfume
+exports.deletePerfume = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Perfume.delete(id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el producto' });
+  }
+};
+
+// Subir imagen
 exports.uploadImage = async (req, res) => {
   try {
     const imagePath = `/uploads/${req.file.filename}`;
@@ -31,3 +67,4 @@ exports.uploadImage = async (req, res) => {
     res.status(500).json({ error: 'Error al subir la imagen' });
   }
 };
+

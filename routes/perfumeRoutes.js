@@ -1,21 +1,34 @@
 const express = require('express');
-const { getAllPerfumes, getPerfumeById } = require('../controllers/perfumeController');
+const {
+  getAllPerfumes,
+  getPerfumeById,
+  createPerfume,
+  updatePerfume,
+  deletePerfume,
+  uploadImage,
+} = require('../controllers/perfumeController');
 const { verifyToken } = require('../middleware/authMiddleware');
-const { uploadImage } = require('../controllers/perfumeController');
 
 const router = express.Router();
 
-router.get('/', getAllPerfumes);
-// Obtener un perfume por ID
-router.get('/:id', getPerfumeById);
+// Rutas públicas
+router.get('/', getAllPerfumes); // Obtener todos los perfumes (público)
+router.get('/:id', getPerfumeById); // Obtener un perfume por ID (público)
 
-router.post('/upload', (req, res) => {
-    req.app.locals.upload.single('imagen')(req, res, (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-      uploadImage(req, res);
-    });
+// Rutas protegidas para el panel de administración
+router.post('/', verifyToken, createPerfume);
+router.put('/:id', verifyToken, updatePerfume);
+router.delete('/:id', verifyToken, deletePerfume);
+
+// Subir imagen (protegido)
+router.post('/upload', verifyToken, (req, res) => {
+  req.app.locals.upload.single('imagen')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    uploadImage(req, res);
   });
-  
-  module.exports = router;
+});
+
+module.exports = router;
+
