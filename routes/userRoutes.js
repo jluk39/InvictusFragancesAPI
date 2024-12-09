@@ -1,12 +1,22 @@
 const express = require('express');
-const { loginUser, registerUser } = require('../controllers/userController');
+const {
+  loginUser,
+  registerUser,
+  getAllUsers,
+  updateUser,
+  deleteUser,
+} = require('../controllers/userController');
+const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Ruta para registro
+// Rutas públicas
 router.post('/register', registerUser);
-
-// Ruta para login
 router.post('/login', loginUser);
+
+// Rutas protegidas
+router.get('/', verifyToken, getAllUsers);
+router.put('/:id', verifyToken, updateUser);
+router.delete('/:id', verifyToken, deleteUser);
 
 module.exports = router;

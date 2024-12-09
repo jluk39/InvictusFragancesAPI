@@ -50,3 +50,40 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ error: 'Error al iniciar sesión' });
   }
 };
+
+// Obtener todos los usuarios
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los usuarios' });
+  }
+};
+
+// Actualizar un usuario
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { username, password, role } = req.body;
+
+  try {
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+    await User.update(id, username, hashedPassword, role);
+
+    res.json({ message: 'Usuario actualizado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar el usuario' });
+  }
+};
+
+// Eliminar un usuario
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await User.delete(id);
+    res.json({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el usuario' });
+  }
+};
